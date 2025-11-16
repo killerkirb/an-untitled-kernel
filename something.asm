@@ -113,57 +113,6 @@ EFI_MAIN PROC
     LEA RCX, [TimeBuffer]
     CALL UEFI_GetTime
 
-    LEA RDX, [TimeBuffer.Year]
-    LEA RCX, [CONVERTED]
-    CALL convhextostr
-
-    LEA RDX, [CONVERTED]
-    CALL UEFI_ConsoleOutputString
-
-    
-    LEA RDX, [TimeBuffer.Month]
-    LEA RCX, [CONVERTED]
-    CALL convhextostr
-
-    LEA RDX, [CONVERTED]
-    CALL UEFI_ConsoleOutputString
-
-    
-    LEA RDX, [TimeBuffer.Day]
-    LEA RCX, [CONVERTED]
-    CALL convhextostr
-
-    LEA RDX, [CONVERTED]
-    CALL UEFI_ConsoleOutputString
-
-    
-    LEA RDX, [TimeBuffer.Hour]
-    LEA RCX, [CONVERTED]
-    CALL convhextostr
-
-    LEA RDX, [CONVERTED]
-    CALL UEFI_ConsoleOutputString
-
-    
-    LEA RDX, [TimeBuffer.Minute]
-    LEA RCX, [CONVERTED]
-    CALL convhextostr
-
-    LEA RDX, [CONVERTED]
-    CALL UEFI_ConsoleOutputString
-
-
-    LEA RDX, [TimeBuffer.Second]
-    LEA RCX, [CONVERTED]
-    CALL convhextostr
-
-    LEA RDX, [CONVERTED]
-    CALL UEFI_ConsoleOutputString
-
-
-    LEA RDX, [RETURNWITHLFCR]
-    CALL UEFI_ConsoleOutputString
-
     MOV RAX, 0
     RET
 
@@ -176,56 +125,4 @@ EFI_CALLED:
         MOV RCX, IMAGE
         MOV RDX, SYSTEMTABLE
         RET
-
-    convhextostr:
-        push    rax
-        push    rbx
-        push    rcx
-        push    rdx
-        push    rsi
-        push    rdi
-        push    r9
-
-        mov     rbx, rcx
-        movzx   eax, word ptr [rdx]
-        xor     esi, esi
-
-    loop_div:
-        xor     edx, edx
-        mov     edi, 10
-        div     edi
-        add     dl, '0'
-        mov     word ptr [rbx + rsi*2], dx
-        inc     esi
-        cmp     eax, 0
-        jne     loop_div
-
-        mov     rcx, rsi
-        shr     rcx, 1
-        cmp     rcx, 0
-        je      no_swap
-        xor     rdi, rdi
-    swap_loop:
-        mov     ax, word ptr [rbx + rdi*2]
-        mov     r9, rsi
-        dec     r9
-        sub     r9, rdi
-        mov     dx, word ptr [rbx + r9*2]
-        mov     word ptr [rbx + rdi*2], dx
-        mov     word ptr [rbx + r9*2], ax
-        inc     rdi
-        cmp     rdi, rcx
-        jl      swap_loop
-    no_swap:
-        mov     word ptr [rbx + rsi*2], 0
-
-        pop     r9
-        pop     rdi
-        pop     rsi
-        pop     rdx
-        pop     rcx
-        pop     rbx
-        pop     rax
-        ret
-
 END
